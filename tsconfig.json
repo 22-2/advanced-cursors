@@ -10,7 +10,7 @@
     "noImplicitAny": true,
     "moduleResolution": "node",
     "importHelpers": true,
-    "lib": ["es2021"],
+    "lib": ["ESNext", "dom"],
     "paths": {
       "src": ["src/*"]
     }
