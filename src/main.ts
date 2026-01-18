@@ -16,6 +16,7 @@ import { blankQ, cmdId, cmdName, createRegex, roundNumber } from "src/utils";
 import { DEFAULT_SETTINGS, MODES, VIEW_TYPE_AC } from "./const";
 import { CursorsModal } from "./CursorsModal";
 import { ACSettingTab } from "./SettingTab";
+import "../styles.css";
 
 export default class ACPlugin extends Plugin {
   settings: ACSettings;
@@ -210,7 +211,38 @@ export default class ACPlugin extends Plugin {
   reconstructSels(sels: EditorSelectionOrCaret[]) {
     return sels.map((sel) => {
       const { anchor, head } = sel;
-      return { anchor, head };
+      return {
+        anchor: { line: anchor.line, ch: anchor.ch },
+        head: { line: head.line, ch: head.ch },
+      };
+    });
+  }
+
+  normalizeSels(ed: Editor, sels: EditorSelectionOrCaret[]) {
+    const normalized = sels.map((sel) => {
+      const aOff = ed.posToOffset(sel.anchor);
+      const hOff = ed.posToOffset(sel.head);
+      if (aOff <= hOff) {
+        return { anchor: sel.anchor, head: sel.head };
+      }
+      return { anchor: sel.head, head: sel.anchor };
+    });
+
+    const unique = new Map<string, EditorSelectionOrCaret>();
+    normalized.forEach((sel) => {
+      const key = `${ed.posToOffset(sel.anchor)}:${ed.posToOffset(sel.head)}`;
+      if (!unique.has(key)) {
+        unique.set(key, sel);
+      }
+    });
+
+    return Array.from(unique.values()).sort((a, b) => {
+      const aA = ed.posToOffset(a.anchor);
+      const bA = ed.posToOffset(b.anchor);
+      if (aA !== bA) return aA - bA;
+      const aH = ed.posToOffset(a.head);
+      const bH = ed.posToOffset(b.head);
+      return aH - bH;
     });
   }
 
@@ -222,10 +254,10 @@ export default class ACPlugin extends Plugin {
         ...currSelections,
         ...newSels,
       ]);
-      ed.setSelections(reconSelections);
+      ed.setSelections(this.normalizeSels(ed, reconSelections));
     } else {
       const reconSelections = this.reconstructSels([...newSels]);
-      ed.setSelections(reconSelections);
+      ed.setSelections(this.normalizeSels(ed, reconSelections));
     }
     // FIX doesn't work with CM6, I have to create a mark decorator
     // this.clearOldSetNewMSpan(ed, ...newSels);
