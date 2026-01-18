@@ -11,8 +11,6 @@ package-lock.json
 *.js.map
 dist/
 main.js
-manifest.json
-styles.css
 
 # obsidian
 data.json
