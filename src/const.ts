@@ -4,7 +4,7 @@ export const DEFAULT_SETTINGS: ACSettings = {
   savedQueries: [],
   savedQViewSide: "right",
   lastQ: { name: "", query: "", flags: "", regexQ: true },
-  openViewOnload: true,
+  openViewOnload: false,
   showFunctionNotifications: true,
 };
 
