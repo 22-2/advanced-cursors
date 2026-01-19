@@ -19,7 +19,7 @@ const buildOptions = {
 	outfile: "dist/main.js",
 	format: "cjs",
 	platform: "node",
-	target: "es2018",
+	target: "esnext",
 	sourcemap: "inline",
 	sourcesContent: !isProd,
 	external: ["obsidian"],
