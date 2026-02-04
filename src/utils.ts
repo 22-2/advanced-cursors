@@ -1,37 +1,18 @@
 import type { App } from "obsidian";
 import { DECIMALS, MODES } from "src/const";
 import type { Mode, Query } from "src/interfaces";
+// 正規表現関連の関数はRegexHelperに移動し、ここからre-export
+import { displayQ as _displayQ } from "src/helpers/RegexHelper";
+export { createRegex, displayRegex, displayQ } from "src/helpers/RegexHelper";
 
 export const cmdId = (q: Query, mode: Mode) =>
   `AC-${mode}: ${q.name} -> ${q.query}`;
-export const cmdName = (q: Query, mode: Mode) => `${mode}: ${displayQ(q)}`;
+export const cmdName = (q: Query, mode: Mode) => `${mode}: ${_displayQ(q)}`;
 
 export const removeQCmds = (app: App, q: Query) => {
   MODES.forEach((mode) => {
     app.commands.removeCommand("advanced-cursors:" + cmdId(q, mode));
   });
-};
-
-export const createRegex = (q: Query) => {
-  if (q.regexQ) {
-    let useFlags = q.flags.slice();
-    if (!useFlags.includes("g")) {
-      useFlags += "g";
-    }
-    return new RegExp(q.query, useFlags);
-  } else {
-    return new RegExp(q.query.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&"), "g");
-  }
-};
-
-export const displayRegex = (q: Query) => {
-  let { source, flags } = createRegex(q);
-  flags = flags.replace("g", "");
-  return `/${source}/${flags}`;
-};
-
-export const displayQ = (q: Query) => {
-  return `${q.name} → ${displayRegex(q)}`;
 };
 
 export function roundNumber(num: number, dec: number = DECIMALS): number {

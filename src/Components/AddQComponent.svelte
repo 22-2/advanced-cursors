@@ -58,9 +58,9 @@
 
       settingsTab.initExistingSavedQs(modal.savedQsDiv);
 
-      MODES.forEach((mode) => plugin.addCmd(newQ, mode));
+      plugin.addQueryCommand(newQ);
 
-      plugin.view.draw();
+      // plugin.view?.draw();
       modal.close();
     }
   }

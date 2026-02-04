@@ -69,7 +69,7 @@ export class ACSettingTab extends PluginSettingTab {
 
       removeQCmds(this.app, removedQ);
 
-      this.plugin.view.draw();
+      // this.plugin.view?.draw();
       new Notice(`${displayQ(removedQ)} removed`);
     } catch (error) {
       console.log(error);
