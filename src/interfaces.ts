@@ -7,14 +7,6 @@ export interface Query {
   flags: string;
 }
 
-export interface ACSettings {
-  savedQueries: Query[];
-  savedQViewSide: "left" | "right";
-  lastQ: Query;
-  openViewOnload: boolean;
-  showFunctionNotifications: boolean;
-}
-
 export type Mode = typeof MODES[number];
 
 declare module "obsidian" {

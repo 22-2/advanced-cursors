@@ -11,7 +11,6 @@ import { LineCommands } from "./LineCommands";
 export class CommandManager {
   constructor(
     private plugin: Plugin,
-    private app: App,
     private selectionCommands: SelectionCommands,
     private cursorCommands: CursorCommands,
     private lineCommands: LineCommands
@@ -20,10 +19,7 @@ export class CommandManager {
   /**
    * 全てのコマンドを登録
    */
-  registerAllCommands(queries: Query[]): void {
-    // クエリベースのコマンドを登録
-    this.registerQueryCommands(queries);
-
+  registerAllCommands(): void {
     // 次/前のマッチに移動
     this.plugin.addCommand({
       id: "move-to-next-match",
@@ -74,39 +70,6 @@ export class CommandManager {
       id: "add-cursor-below",
       name: "Add a cursor on the line below",
       editorCallback: (ed: Editor) => this.cursorCommands.addCursorBelow(ed),
-    });
-  }
-
-  /**
-   * クエリごとのコマンドを登録
-   */
-  registerQueryCommands(queries: Query[]): void {
-    const modes: Mode[] = ["All", "Next", "Prev"];
-    queries.forEach((q) => {
-      modes.forEach((mode) => this.registerQueryCommand(q, mode));
-    });
-  }
-
-  /**
-   * 単一のクエリコマンドを登録
-   */
-  private registerQueryCommand(q: Query, mode: Mode): void {
-    this.plugin.addCommand({
-      id: cmdId(q, mode),
-      name: cmdName(q, mode),
-      editorCallback: (ed: Editor) => {
-        this.selectionCommands.selectInstance(ed, false, mode, q);
-      },
-    });
-  }
-
-  /**
-   * クエリコマンドを削除
-   */
-  unregisterQueryCommand(q: Query): void {
-    const modes: Mode[] = ["All", "Next", "Prev"];
-    modes.forEach((mode) => {
-      this.app.commands.removeCommand("advanced-cursors:" + cmdId(q, mode));
     });
   }
 }

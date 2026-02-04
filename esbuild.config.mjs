@@ -1,6 +1,4 @@
 import esbuild from "esbuild";
-import sveltePlugin from "esbuild-svelte";
-import sveltePreprocess from "svelte-preprocess";
 import fs from "fs";
 import process from "process";
 
@@ -27,12 +25,6 @@ const buildOptions = {
 	tsconfig: "tsconfig.json",
 	minify: isProd,
 	plugins: [
-		sveltePlugin({
-			preprocess: sveltePreprocess(),
-			compilerOptions: {
-				css: false,
-			},
-		}),
 		{
 			name: "post-build",
 			setup(build) {

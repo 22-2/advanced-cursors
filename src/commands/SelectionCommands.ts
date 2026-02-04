@@ -1,10 +1,10 @@
-import type { Editor, Notice } from "obsidian";
-import type { ACSettings, Mode, Query } from "src/interfaces";
-import { blankQ } from "src/utils";
+import type { Editor } from "obsidian";
+import type { Mode } from "src/interfaces";
 import { EditorService } from "src/services/EditorService";
-import { SelectionService } from "src/services/SelectionService";
-import { SearchService } from "src/services/SearchService";
 import { ScrollService } from "src/services/ScrollService";
+import { SearchService } from "src/services/SearchService";
+import { SelectionService } from "src/services/SelectionService";
+import { blankQ } from "src/utils";
 
 /**
  * 選択範囲操作コマンドを提供するクラス
@@ -15,7 +15,6 @@ export class SelectionCommands {
     private selectionService: SelectionService,
     private searchService: SearchService,
     private scrollService: ScrollService,
-    private settings: ACSettings,
     private showNotice: (message: string) => void
   ) {}
 
@@ -26,17 +25,16 @@ export class SelectionCommands {
     ed: Editor,
     appendQ: boolean,
     mode: Mode,
-    existingQ?: Query
   ): void {
     const { text, wordA, wordH } = this.editorService.getSelectedOrWordAtCursor(ed);
     
     // カーソル下の単語を選択
-    if (!ed.somethingSelected() && !existingQ) {
+    if (!ed.somethingSelected()) {
       ed.setSelection(wordA, wordH);
       return;
     }
 
-    const q = existingQ ?? blankQ(text, false);
+    const q = blankQ(text, false);
 
     let content = ed.getValue();
     let matches = this.searchService.findAllMatches(content, q);
@@ -53,9 +51,6 @@ export class SelectionCommands {
       );
       this.selectionService.setSelections(ed, nextSels, appendQ);
       
-      if (this.settings.showFunctionNotifications) {
-        this.showNotice(`${matches.length} matches found.`);
-      }
       return;
     }
 
@@ -75,11 +70,7 @@ export class SelectionCommands {
       this.selectionService.setSelections(ed, [nextSel], appendQ);
       this.scrollService.scrollToSelection(ed, nextSel);
     } else {
-      if (this.settings.showFunctionNotifications) {
-        this.showNotice(
-          `No instance of '${toSelect}' found anywhere in note (that isn't already selected).`
-        );
-      }
+      this.showNotice(`No more matches for "${toSelect}".`);
     }
   }
 }

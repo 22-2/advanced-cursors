@@ -1,4 +1,4 @@
-import type { Editor, EditorPosition, EditorSelection } from "obsidian";
+import type { Editor, EditorPosition } from "obsidian";
 import { PositionHelper } from "src/helpers/PositionHelper";
 
 /**

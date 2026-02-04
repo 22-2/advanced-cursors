@@ -1,7 +1,7 @@
 import type { Editor } from "obsidian";
 import type { Mode, Query } from "src/interfaces";
-import { createRegex } from "src/helpers/RegexHelper";
 import { SelectionService } from "./SelectionService";
+import { createRegex } from "../helpers/RegexHelper";
 
 /**
  * 検索とマッチングを行うサービス
